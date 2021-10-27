@@ -1,49 +1,19 @@
-import dynamic from "next/dynamic";
-import { InfoOutline } from "@styled-icons/evaicons-outline/InfoOutline";
-
-import type { NextPage } from "next";
+import { MapProps } from "components/Map";
+import client from "graphql/client";
+import { GetPlacesQuery } from "graphql/generated/graphql";
+import { GET_PLACES } from "graphql/queries";
+import { GetStaticProps } from "next";
 import React from "react";
-import { LinkWrapper } from "components/LinkWrapper";
+import { HomeTemplate } from "templates/Home";
 
-const Map = dynamic(
-  () =>
-    import("components/Map").then(
-      (item) => item.Map,
-      () => null as never,
-    ),
-  {
-    ssr: false,
-  },
-);
+export default function Home({ places }: MapProps) {
+  return <HomeTemplate places={places} />;
+}
 
-const Home: NextPage = () => {
-  const placeOne = {
-    id: "1",
-    name: "Petrópolis",
-    slug: "petrópolis",
-    location: {
-      latitude: 0,
-      longitude: 0,
-    },
+export const getStaticProps: GetStaticProps = async () => {
+  const { places } = await client.request<GetPlacesQuery>(GET_PLACES);
+
+  return {
+    props: { places },
   };
-  const placeTwo = {
-    id: "2",
-    name: "Reykjavik",
-    slug: "reykjavik",
-    location: {
-      latitude: -10,
-      longitude: -50,
-    },
-  };
-
-  return (
-    <>
-      <Map places={[placeOne, placeTwo]} />
-      <LinkWrapper href="/about">
-        <InfoOutline size={32} aria-label="About" />
-      </LinkWrapper>
-    </>
-  );
 };
-
-export default Home;
