@@ -2892,4 +2892,4 @@ export type GetPlaceBySlugQueryVariables = Exact<{
 }>;
 
 
-export type GetPlaceBySlugQuery = { __typename?: 'Query', place?: { __typename?: 'Place', id: string, slug: string, name: string, location: { __typename?: 'Location', latitude: number, longitude: number }, description?: { __typename?: 'RichText', html: string } | null | undefined, gallery: Array<{ __typename?: 'Asset', url: string, height?: number | null | undefined, id: string }> } | null | undefined };
+export type GetPlaceBySlugQuery = { __typename?: 'Query', place?: { __typename?: 'Place', id: string, slug: string, name: string, location: { __typename?: 'Location', latitude: number, longitude: number }, description?: { __typename?: 'RichText', html: string, text: string } | null | undefined, gallery: Array<{ __typename?: 'Asset', url: string, height?: number | null | undefined, id: string }> } | null | undefined };
