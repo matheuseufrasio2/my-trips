@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
-// import { Container } from "./styles";
+import { MapConsumer, MapContainer, Marker, TileLayer } from "react-leaflet";
+import { MapWrapper } from "./styles";
 
 interface Place {
   id: string;
@@ -38,32 +38,52 @@ export function Map({ places }: MapProps) {
   const router = useRouter();
 
   return (
-    <MapContainer
-      center={[0, 0]}
-      zoom={3}
-      style={{
-        height: "100%",
-        width: "100%",
-      }}
-    >
-      <CustomTileLayer />
+    <MapWrapper>
+      <MapContainer
+        center={[0, 0]}
+        zoom={3}
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
+        minZoom={3}
+        maxBounds={[
+          [-180, 180],
+          [180, -180],
+        ]}
+      >
+        <MapConsumer>
+          {(map) => {
+            const width =
+              window.innerWidth ||
+              document.documentElement.clientWidth ||
+              document.body.clientWidth;
+            if (width < 768) {
+              map.setZoom(2);
+              map.setMinZoom(1);
+            }
+            return null;
+          }}
+        </MapConsumer>
+        <CustomTileLayer />
 
-      {places?.map(({ id, name, slug, location }) => {
-        const { latitude, longitude } = location;
+        {places?.map(({ id, name, slug, location }) => {
+          const { latitude, longitude } = location;
 
-        return (
-          <Marker
-            key={`place-${id}`}
-            title={name}
-            position={[latitude, longitude]}
-            eventHandlers={{
-              click: () => {
-                router.push(`/place/${slug}`);
-              },
-            }}
-          />
-        );
-      })}
-    </MapContainer>
+          return (
+            <Marker
+              key={`place-${id}`}
+              title={name}
+              position={[latitude, longitude]}
+              eventHandlers={{
+                click: () => {
+                  router.push(`/place/${slug}`);
+                },
+              }}
+            />
+          );
+        })}
+      </MapContainer>
+    </MapWrapper>
   );
 }
